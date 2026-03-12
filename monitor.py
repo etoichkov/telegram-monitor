@@ -2,20 +2,15 @@ import asyncio
 import unicodedata
 from telethon import TelegramClient, events
 
-# Tus credenciales de Telegram
 api_id = 31566646
 api_hash = "ab2f5f3d41c1df52515c7f95edd4b74e"
 
-# Palabras que quieres detectar
 palabras_clave = [
     "calendario electronico"
 ]
 
-# Crear cliente
 client = TelegramClient("monitor", api_id, api_hash)
 
-
-# Función para normalizar texto (quitar acentos y pasar a minúsculas)
 def normalizar(texto):
     texto = texto.lower()
     texto = unicodedata.normalize("NFD", texto)
@@ -29,6 +24,8 @@ async def handler(event):
     if not event.raw_text:
         return
 
+    print("Mensaje recibido:", event.raw_text)
+
     texto = normalizar(event.raw_text)
 
     for palabra in palabras_clave:
@@ -39,7 +36,7 @@ async def handler(event):
             alerta = f"""
 🚨 ALERTA
 
-Chat: {event.chat.title if event.chat else "Desconocido"}
+Chat: {getattr(event.chat, "title", "Chat privado")}
 
 Mensaje:
 {event.raw_text}
